@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpRequest, HttpEvent, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { saveAs } from 'file-saver';
 
 @Injectable({
   providedIn: 'root'
@@ -30,11 +31,10 @@ export class UploadFilesService {
   insertImageToPdf(x: number, y: number, page: number, imageName: string , pdfName: string ) {
     let params = new HttpParams().set('x',x).set('y',y).set('page',page).set('imageName',imageName)
       .set('pdfName',pdfName);
-    this.http.get(`${this.baseUrl}/pdf-image`,{params: params}).subscribe(
+    this.http.get(`${this.baseUrl}/pdf-image`,{params: params,responseType: 'arraybuffer'},).subscribe(
       (response) =>{
-        console.log(response);
-      },(error) =>{
-        console.log(error);
-    }
+
+        var blob = new Blob([response], {type: "application/pdf;charset=utf-8"});
+        saveAs(blob, "attachedFile.pdf")}
     ); }
 }
